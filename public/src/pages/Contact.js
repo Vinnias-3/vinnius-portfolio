@@ -6,7 +6,7 @@ export default function Contact({ api }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch('http://localhost:5001/api/public/contact', {
+    await fetch('https://vinnius-portfolio-api.onrender.com/api/public/contact', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form)
     });
     setSent(true);

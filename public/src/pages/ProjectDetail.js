@@ -10,7 +10,7 @@ export default function ProjectDetail({ api }) {
     fetch(`${api}/projects/${slug}`).then(r => r.json()).then(p => {
       setProject(p);
       if (p.category) {
-        fetch(`http://localhost:5001/api/public/pexels-images?query=${encodeURIComponent(p.category)}&per_page=6`)
+        fetch(`https://vinnius-portfolio-api.onrender.com/api/public/pexels-images?query=${encodeURIComponent(p.category)}&per_page=6`)
           .then(r => r.json()).then(setPhotos);
       }
     });

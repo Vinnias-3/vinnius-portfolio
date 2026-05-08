@@ -8,7 +8,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import './App.css';
 
-const API = 'http://localhost:5001/api/public';
+const API = 'https://vinnius-portfolio-api.onrender.com/api/public';
 
 function ScrollToTop() {
   const { pathname } = useLocation();

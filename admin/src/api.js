@@ -1,4 +1,4 @@
-const API = 'http://localhost:5001';
+const API = 'https://vinnius-portfolio-api.onrender.com';
 
 export function getHeaders(token) {
   return {
