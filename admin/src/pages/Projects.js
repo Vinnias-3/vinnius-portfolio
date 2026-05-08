@@ -1,16 +1,17 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function Projects({ api, token }) {
   const [projects, setProjects] = useState([]);
   const [editing, setEditing] = useState(null);
 
-  const load = useCallback(async () => {
+  const load = // eslint-disable-next-line react-hooks/exhaustive-deps
+  useCallback(async () => {
     const h = { 'Authorization': `Bearer ${token}` };
     const d = await fetch(`${api}/api/admin/projects`, { headers: h }).then(r => r.json());
     setProjects(Array.isArray(d) ? d : []);
-  }, [api, token]);
+  };
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [token]); // eslint-disable-line
 
   const empty = { title: '', slug: '', short_description: '', full_description: '', category: 'Web Development', thumbnail: '', live_demo_url: '', github_url: '', technologies: '', is_featured: 0, is_published: 1, sort_order: 0 };
 

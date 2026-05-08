@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 export default function Dashboard({ api, token }) {
   const [stats, setStats] = useState({ projects: 0, skills: 0, messages: 0, unread: 0 });
 
-  const load = async () => {
-    const h = { 'Authorization': `Bearer ${token}` };
-    try {
+  useEffect(() => {
+    const load = async () => {
+      const h = { 'Authorization': `Bearer ${token}` };
       const [p, s, m] = await Promise.all([
         fetch(`${api}/api/admin/projects`, { headers: h }).then(r => r.json()),
         fetch(`${api}/api/admin/skills`, { headers: h }).then(r => r.json()),
@@ -17,10 +17,10 @@ export default function Dashboard({ api, token }) {
         messages: Array.isArray(m) ? m.length : 0,
         unread: Array.isArray(m) ? m.filter(x => !x.is_read).length : 0
       });
-    } catch(e) { console.error(e); }
-  };
-
-  useEffect(() => { load(); }, [token]);
+    };
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   return (
     <div>

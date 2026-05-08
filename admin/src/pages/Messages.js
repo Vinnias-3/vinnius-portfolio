@@ -1,15 +1,16 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function Messages({ api, token }) {
   const [messages, setMessages] = useState([]);
 
-  const load = useCallback(async () => {
+  const load = // eslint-disable-next-line react-hooks/exhaustive-deps
+  useCallback(async () => {
     const h = { 'Authorization': `Bearer ${token}` };
     const d = await fetch(`${api}/api/admin/messages`, { headers: h }).then(r => r.json());
     setMessages(Array.isArray(d) ? d : []);
-  }, [api, token]);
+  };
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [token]); // eslint-disable-line
 
   const markRead = async (id) => {
     const h = { 'Authorization': `Bearer ${token}` };

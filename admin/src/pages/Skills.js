@@ -1,16 +1,17 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function Skills({ api, token }) {
   const [skills, setSkills] = useState([]);
   const [editing, setEditing] = useState(null);
 
-  const load = useCallback(async () => {
+  const load = // eslint-disable-next-line react-hooks/exhaustive-deps
+  useCallback(async () => {
     const h = { 'Authorization': `Bearer ${token}` };
     const d = await fetch(`${api}/api/admin/skills`, { headers: h }).then(r => r.json());
     setSkills(Array.isArray(d) ? d : []);
-  }, [api, token]);
+  };
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [token]); // eslint-disable-line
 
   const empty = { name: '', percentage: 80, category: 'Technical', icon: '💻', sort_order: 0, is_visible: 1 };
   
