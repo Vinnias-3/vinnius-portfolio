@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Vinnius Mbuthia | Developer & AI Engineer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { margin: 0; background: #000; overflow-x: hidden; }
+    #video-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; will-change: transform; }
+    #video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: rgba(0,0,0,0.45); }
+    #noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; opacity: 0.025; mix-blend-mode: overlay; }
+    #root { position: relative; z-index: 3; }
+  </style>
+</head>
+<body>
+  <video id="video-bg" autoplay muted loop playsinline preload="auto" poster="">
+    <source src="%PUBLIC_URL%/bg-video.mp4" type="video/mp4">
+  </video>
+  <div id="video-overlay"></div>
+  <svg id="noise-overlay" xmlns="http://www.w3.org/2000/svg">
+    <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+    <rect width="100%" height="100%" filter="url(#noise)" opacity="1"/>
+  </svg>
+  <div id="root"></div>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var video = document.getElementById('video-bg');
+      if (video) { video.play().catch(function() { document.addEventListener('click', function() { video.play(); }, { once: true }); }); }
+    });
+    window.addEventListener('scroll', function() {
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add('visible');
+      });
+    });
+  </script>
+</body>
+</html>
