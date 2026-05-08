@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: vinnius-portfolio-api
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
