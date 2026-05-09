@@ -158,7 +158,7 @@ function FeaturedCard({ project, index }) {
   const [photos, setPhotos] = useState([]);
   const [currentPhoto, setCurrentPhoto] = useState(0);
   useEffect(() => {
-    fetch(`https://vinnius-portfolio-api.onrender.com/api/public/pexels-images?query=${encodeURIComponent(project.category || 'technology')}&per_page=4`)
+    fetch(`https://vinnias.pythonanywhere.com/api/public/pexels-images?query=${encodeURIComponent(project.category || 'technology')}&per_page=4`)
       .then(r => r.json()).then(d => setPhotos(d.slice(0, 4)));
   }, [project.category]);
   useEffect(() => {
@@ -186,7 +186,7 @@ function FeaturedCard({ project, index }) {
 function NotificationsBanner({ api }) {
   const [notifs, setNotifs] = useState([]);
   useEffect(() => {
-    fetch(`https://vinnius-portfolio-api.onrender.com/api/public/notifications`)
+    fetch(`https://vinnias.pythonanywhere.com/api/public/notifications`)
       .then(r => r.json()).then(d => setNotifs(Array.isArray(d) ? d : []));
   }, [api]);
 

@@ -1,4 +1,4 @@
-const API = 'https://vinnius-portfolio-api.onrender.com';
+const API = 'https://vinnias.pythonanywhere.com';
 
 export function getHeaders(token) {
   return {

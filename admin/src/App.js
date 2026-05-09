@@ -9,7 +9,7 @@ import Notifications from "./pages/Notifications";
 import Messages from './pages/Messages';
 import './App.css';
 
-const API = 'https://vinnius-portfolio-api.onrender.com';
+const API = 'https://vinnias.pythonanywhere.com';
 
 function App() {
   const [token, setToken] = useState(null);
