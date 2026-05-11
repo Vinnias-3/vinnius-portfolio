@@ -369,10 +369,299 @@ def delete_notification(nid):
     execute("DELETE FROM notifications WHERE id = ?", (nid,))
     return jsonify({"success": True})
 
+
+# ─── LIBRARY ───────────────────────────────────────────────
+@app.route("/api/public/library", methods=["GET"])
+def public_library():
+    return jsonify(query("SELECT * FROM library WHERE is_published = 1 ORDER BY created_at DESC"))
+
+@app.route("/api/admin/library", methods=["GET"])
+@jwt_required(optional=False)
+def admin_library():
+    return jsonify(query("SELECT * FROM library ORDER BY created_at DESC"))
+
+@app.route("/api/admin/library", methods=["POST"])
+@jwt_required(optional=False)
+def add_library():
+    data = request.get_json()
+    lid = execute("INSERT INTO library (title, description, category, pdf_url, cover_image) VALUES (?,?,?,?,?)",
+                  (data["title"], data.get("description",""), data.get("category","General"), data["pdf_url"], data.get("cover_image","")))
+    return jsonify({"success": True, "id": lid})
+
+@app.route("/api/admin/library/<int:lid>", methods=["PUT"])
+@jwt_required(optional=False)
+def update_library(lid):
+    data = request.get_json()
+    fields = ["title","description","category","pdf_url","cover_image","is_published"]
+    updates = {k: data[k] for k in fields if k in data}
+    if updates:
+        set_clause = ", ".join(f"{k} = ?" for k in updates)
+        execute(f"UPDATE library SET {set_clause} WHERE id = ?", list(updates.values()) + [lid])
+    return jsonify({"success": True})
+
+@app.route("/api/admin/library/<int:lid>", methods=["DELETE"])
+@jwt_required(optional=False)
+def delete_library(lid):
+    execute("DELETE FROM library WHERE id = ?", (lid,))
+    return jsonify({"success": True})
+
+# ─── POSTS (BLOG) ─────────────────────────────────────────
+@app.route("/api/public/posts", methods=["GET"])
+def public_posts():
+    return jsonify(query("SELECT * FROM posts WHERE is_published = 1 ORDER BY created_at DESC"))
+
+@app.route("/api/admin/posts", methods=["GET"])
+@jwt_required(optional=False)
+def admin_posts():
+    return jsonify(query("SELECT * FROM posts ORDER BY created_at DESC"))
+
+@app.route("/api/admin/posts", methods=["POST"])
+@jwt_required(optional=False)
+def add_post():
+    data = request.get_json()
+    pid = execute("INSERT INTO posts (title, content, image_url, video_url, external_link, category) VALUES (?,?,?,?,?,?)",
+                  (data["title"], data.get("content",""), data.get("image_url",""), data.get("video_url",""), data.get("external_link",""), data.get("category","General")))
+    return jsonify({"success": True, "id": pid})
+
+@app.route("/api/admin/posts/<int:pid>", methods=["PUT"])
+@jwt_required(optional=False)
+def update_post(pid):
+    data = request.get_json()
+    fields = ["title","content","image_url","video_url","external_link","category","is_published"]
+    updates = {k: data[k] for k in fields if k in data}
+    if updates:
+        set_clause = ", ".join(f"{k} = ?" for k in updates)
+        execute(f"UPDATE posts SET {set_clause} WHERE id = ?", list(updates.values()) + [pid])
+    return jsonify({"success": True})
+
+@app.route("/api/admin/posts/<int:pid>", methods=["DELETE"])
+@jwt_required(optional=False)
+def delete_post(pid):
+    execute("DELETE FROM posts WHERE id = ?", (pid,))
+    return jsonify({"success": True})
+
+# ─── FEED ──────────────────────────────────────────────────
+@app.route("/api/public/feed", methods=["GET"])
+def public_feed():
+    return jsonify(query("SELECT * FROM feed WHERE is_published = 1 ORDER BY created_at DESC"))
+
+@app.route("/api/admin/feed", methods=["GET"])
+@jwt_required(optional=False)
+def admin_feed():
+    return jsonify(query("SELECT * FROM feed ORDER BY created_at DESC"))
+
+@app.route("/api/admin/feed", methods=["POST"])
+@jwt_required(optional=False)
+def add_feed():
+    data = request.get_json()
+    fid = execute("INSERT INTO feed (type, title, description, media_url, external_link, category) VALUES (?,?,?,?,?,?)",
+                  (data.get("type","post"), data["title"], data.get("description",""), data.get("media_url",""), data.get("external_link",""), data.get("category","General")))
+    return jsonify({"success": True, "id": fid})
+
+@app.route("/api/admin/feed/<int:fid>", methods=["PUT"])
+@jwt_required(optional=False)
+def update_feed(fid):
+    data = request.get_json()
+    fields = ["type","title","description","media_url","external_link","category","is_published"]
+    updates = {k: data[k] for k in fields if k in data}
+    if updates:
+        set_clause = ", ".join(f"{k} = ?" for k in updates)
+        execute(f"UPDATE feed SET {set_clause} WHERE id = ?", list(updates.values()) + [fid])
+    return jsonify({"success": True})
+
+@app.route("/api/admin/feed/<int:fid>", methods=["DELETE"])
+@jwt_required(optional=False)
+def delete_feed(fid):
+    execute("DELETE FROM feed WHERE id = ?", (fid,))
+    return jsonify({"success": True})
+
+# ─── DEV RESOURCES ────────────────────────────────────────
+@app.route("/api/public/resources", methods=["GET"])
+def public_resources():
+    return jsonify(query("SELECT * FROM dev_resources WHERE is_published = 1 ORDER BY created_at DESC"))
+
+@app.route("/api/admin/resources", methods=["GET"])
+@jwt_required(optional=False)
+def admin_resources():
+    return jsonify(query("SELECT * FROM dev_resources ORDER BY created_at DESC"))
+
+@app.route("/api/admin/resources", methods=["POST"])
+@jwt_required(optional=False)
+def add_resource():
+    data = request.get_json()
+    rid = execute("INSERT INTO dev_resources (title, description, category, link_url, image_url, video_url) VALUES (?,?,?,?,?,?)",
+                  (data["title"], data.get("description",""), data.get("category","General"), data["link_url"], data.get("image_url",""), data.get("video_url","")))
+    return jsonify({"success": True, "id": rid})
+
+@app.route("/api/admin/resources/<int:rid>", methods=["PUT"])
+@jwt_required(optional=False)
+def update_resource(rid):
+    data = request.get_json()
+    fields = ["title","description","category","link_url","image_url","video_url","is_published"]
+    updates = {k: data[k] for k in fields if k in data}
+    if updates:
+        set_clause = ", ".join(f"{k} = ?" for k in updates)
+        execute(f"UPDATE dev_resources SET {set_clause} WHERE id = ?", list(updates.values()) + [rid])
+    return jsonify({"success": True})
+
+@app.route("/api/admin/resources/<int:rid>", methods=["DELETE"])
+@jwt_required(optional=False)
+def delete_resource(rid):
+    execute("DELETE FROM dev_resources WHERE id = ?", (rid,))
+    return jsonify({"success": True})
+
+# ─── EVENTS ───────────────────────────────────────────────
+@app.route("/api/public/events", methods=["GET"])
+def public_events():
+    return jsonify(query("SELECT * FROM events WHERE is_published = 1 ORDER BY event_date DESC"))
+
+@app.route("/api/admin/events", methods=["GET"])
+@jwt_required(optional=False)
+def admin_events():
+    return jsonify(query("SELECT * FROM events ORDER BY event_date DESC"))
+
+@app.route("/api/admin/events", methods=["POST"])
+@jwt_required(optional=False)
+def add_event():
+    data = request.get_json()
+    eid = execute("INSERT INTO events (title, description, event_date, location, image_url, link_url) VALUES (?,?,?,?,?,?)",
+                  (data["title"], data.get("description",""), data.get("event_date",""), data.get("location",""), data.get("image_url",""), data.get("link_url","")))
+    return jsonify({"success": True, "id": eid})
+
+@app.route("/api/admin/events/<int:eid>", methods=["PUT"])
+@jwt_required(optional=False)
+def update_event(eid):
+    data = request.get_json()
+    fields = ["title","description","event_date","location","image_url","link_url","is_published"]
+    updates = {k: data[k] for k in fields if k in data}
+    if updates:
+        set_clause = ", ".join(f"{k} = ?" for k in updates)
+        execute(f"UPDATE events SET {set_clause} WHERE id = ?", list(updates.values()) + [eid])
+    return jsonify({"success": True})
+
+@app.route("/api/admin/events/<int:eid>", methods=["DELETE"])
+@jwt_required(optional=False)
+def delete_event(eid):
+    execute("DELETE FROM events WHERE id = ?", (eid,))
+    return jsonify({"success": True})
+
+# ─── GUESTBOOK ────────────────────────────────────────────
+@app.route("/api/public/guestbook", methods=["GET"])
+def public_guestbook():
+    return jsonify(query("SELECT * FROM guestbook WHERE is_approved = 1 ORDER BY created_at DESC LIMIT 50"))
+
+@app.route("/api/public/guestbook", methods=["POST"])
+def add_guestbook():
+    data = request.get_json()
+    execute("INSERT INTO guestbook (visitor_name, message) VALUES (?,?)", (data["visitor_name"], data["message"]))
+    return jsonify({"success": True, "message": "Your message will appear after approval."})
+
+@app.route("/api/admin/guestbook", methods=["GET"])
+@jwt_required(optional=False)
+def admin_guestbook():
+    return jsonify(query("SELECT * FROM guestbook ORDER BY created_at DESC"))
+
+@app.route("/api/admin/guestbook/<int:gid>", methods=["PUT"])
+@jwt_required(optional=False)
+def approve_guestbook(gid):
+    data = request.get_json()
+    execute("UPDATE guestbook SET is_approved = ? WHERE id = ?", (data.get("is_approved", 1), gid))
+    return jsonify({"success": True})
+
+@app.route("/api/admin/guestbook/<int:gid>", methods=["DELETE"])
+@jwt_required(optional=False)
+def delete_guestbook(gid):
+    execute("DELETE FROM guestbook WHERE id = ?", (gid,))
+    return jsonify({"success": True})
+
+# ─── TIMELINE ─────────────────────────────────────────────
+@app.route("/api/public/timeline", methods=["GET"])
+def public_timeline():
+    return jsonify(query("SELECT * FROM timeline WHERE is_published = 1 ORDER BY sort_order, year"))
+
+@app.route("/api/admin/timeline", methods=["GET"])
+@jwt_required(optional=False)
+def admin_timeline():
+    return jsonify(query("SELECT * FROM timeline ORDER BY sort_order"))
+
+@app.route("/api/admin/timeline", methods=["POST"])
+@jwt_required(optional=False)
+def add_timeline():
+    data = request.get_json()
+    tid = execute("INSERT INTO timeline (year, title, description, icon, sort_order) VALUES (?,?,?,?,?)",
+                  (data["year"], data["title"], data.get("description",""), data.get("icon","📌"), data.get("sort_order",0)))
+    return jsonify({"success": True, "id": tid})
+
+@app.route("/api/admin/timeline/<int:tid>", methods=["PUT"])
+@jwt_required(optional=False)
+def update_timeline(tid):
+    data = request.get_json()
+    fields = ["year","title","description","icon","sort_order","is_published"]
+    updates = {k: data[k] for k in fields if k in data}
+    if updates:
+        set_clause = ", ".join(f"{k} = ?" for k in updates)
+        execute(f"UPDATE timeline SET {set_clause} WHERE id = ?", list(updates.values()) + [tid])
+    return jsonify({"success": True})
+
+@app.route("/api/admin/timeline/<int:tid>", methods=["DELETE"])
+@jwt_required(optional=False)
+def delete_timeline(tid):
+    execute("DELETE FROM timeline WHERE id = ?", (tid,))
+    return jsonify({"success": True})
+
+# ─── HALL OF FAME ─────────────────────────────────────────
+@app.route("/api/public/halloffame", methods=["GET"])
+def public_halloffame():
+    return jsonify(query("SELECT * FROM hall_of_fame WHERE is_published = 1 ORDER BY sort_order"))
+
+@app.route("/api/admin/halloffame", methods=["GET"])
+@jwt_required(optional=False)
+def admin_halloffame():
+    return jsonify(query("SELECT * FROM hall_of_fame ORDER BY sort_order"))
+
+@app.route("/api/admin/halloffame", methods=["POST"])
+@jwt_required(optional=False)
+def add_halloffame():
+    data = request.get_json()
+    hid = execute("INSERT INTO hall_of_fame (title, description, image_url, link_url, sort_order) VALUES (?,?,?,?,?)",
+                  (data["title"], data.get("description",""), data.get("image_url",""), data.get("link_url",""), data.get("sort_order",0)))
+    return jsonify({"success": True, "id": hid})
+
+@app.route("/api/admin/halloffame/<int:hid>", methods=["DELETE"])
+@jwt_required(optional=False)
+def delete_halloffame(hid):
+    execute("DELETE FROM hall_of_fame WHERE id = ?", (hid,))
+    return jsonify({"success": True})
+
+# ─── STATS ────────────────────────────────────────────────
+@app.route("/api/public/stats", methods=["GET"])
+def public_stats():
+    stats = {"projects": len(query("SELECT id FROM projects WHERE is_published=1")),
+             "skills": len(query("SELECT id FROM skills WHERE is_visible=1")),
+             "posts": len(query("SELECT id FROM posts WHERE is_published=1")),
+             "library": len(query("SELECT id FROM library WHERE is_published=1"))}
+    return jsonify(stats)
+
+
+@app.route("/api/admin/upload", methods=["POST"])
+@jwt_required(optional=False)
+def upload_file():
+    if "image" not in request.files:
+        return jsonify({"error": "No file"}), 400
+    file = request.files["image"]
+    if file.filename == "":
+        return jsonify({"error": "No filename"}), 400
+    filename = secure_filename(file.filename)
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    saved_name = f"{timestamp}_{filename}"
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], saved_name)
+    file.save(filepath)
+    return jsonify({"success": True, "url": f"/uploads/{saved_name}"})
+
 @app.route("/api/health")
 def health():
     return jsonify({"status": "operational", "service": "Vinnius Portfolio API", "version": "1.0.0"})
 
 if __name__ == "__main__":
     init_db()
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=False)
