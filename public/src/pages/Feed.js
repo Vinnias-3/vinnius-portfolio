@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-const API = 'http://localhost:5001/api/public';
+const API = 'https://vinnias.pythonanywhere.com/api/public';
 const TYPE_ICONS = { music: '🎵', game: '🎮', video: '🎬', image: '🖼️', post: '📝' };
 export default function Feed() {
   const [items, setItems] = useState([]);

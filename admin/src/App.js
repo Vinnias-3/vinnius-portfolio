@@ -17,7 +17,7 @@ import HallOfFame from './pages/HallOfFame';
 import Guestbook from './pages/Guestbook';
 import './App.css';
 
-const API = 'http://localhost:5001';
+const API = 'https://vinnias.pythonanywhere.com';
 
 function App() {
   const [token, setToken] = useState(null);

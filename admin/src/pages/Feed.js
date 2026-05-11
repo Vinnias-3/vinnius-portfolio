@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-const API = 'http://localhost:5001';
+const API = 'https://vinnias.pythonanywhere.com';
 export default function Feed({ api, token }) {
   const [items, setItems] = useState([]);
   const [editing, setEditing] = useState(null);

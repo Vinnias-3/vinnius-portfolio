@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-const API_URL = 'http://localhost:5001';
+const API_URL = 'https://vinnias.pythonanywhere.com';
 export default function Projects({ api, token }) {
   const [projects, setProjects] = useState([]);
   const [editing, setEditing] = useState(null);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-const API = 'http://localhost:5001/api/public';
+const API = 'https://vinnias.pythonanywhere.com/api/public';
 export default function Events() {
   const [items, setItems] = useState([]);
   useEffect(() => { fetch(`${API}/events`).then(r => r.json()).then(setItems); }, []);

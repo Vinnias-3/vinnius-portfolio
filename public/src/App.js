@@ -16,7 +16,7 @@ import HallOfFame from './pages/HallOfFame';
 import Guestbook from './pages/Guestbook';
 import './App.css';
 
-const API = 'http://localhost:5001/api/public';
+const API = 'https://vinnias.pythonanywhere.com/api/public';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
