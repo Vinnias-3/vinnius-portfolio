@@ -10,11 +10,22 @@ export default function HallOfFame({ api, token }) {
   const empty = { title: '', description: '', image_url: '', link_url: '', sort_order: 0 };
   
   const uploadFile = async (file, field) => {
-    setUploading(true);
-    const fd = new FormData(); fd.append('image', file);
-    const res = await fetch(`${API}/api/admin/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
-    const data = await res.json();
-    if (data.url) setEditing({ ...editing, [field]: `${API}${data.url}` });
+    if (!file) return;
+    setUploading('Uploading...');
+    try {
+      const fd = new FormData(); fd.append('image', file);
+      const res = await fetch(`${API}/api/admin/upload`, { 
+        method: 'POST', 
+        headers: { 'Authorization': `Bearer ${token}` }, 
+        body: fd 
+      });
+      const data = await res.json();
+      if (data.url) {
+        setEditing(prev => ({ ...prev, [field]: `${API}${data.url}` }));
+      }
+    } catch(e) {
+      console.error('Upload failed:', e);
+    }
     setUploading(false);
   };
   

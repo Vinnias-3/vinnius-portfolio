@@ -15,11 +15,22 @@ export default function Projects({ api, token }) {
   const empty = { title: '', slug: '', short_description: '', full_description: '', category: 'Web Development', thumbnail: '', live_demo_url: '', github_url: '', technologies: '', is_featured: 0, is_published: 1 };
 
   const uploadThumbnail = async (file) => {
-    setUploading(true);
-    const fd = new FormData(); fd.append('image', file);
-    const res = await fetch(`${API_URL}/api/admin/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
-    const data = await res.json();
-    if (data.url) setEditing({ ...editing, thumbnail: `${API_URL}${data.url}` });
+    if (!file) return;
+    setUploading('Uploading...');
+    try {
+      const fd = new FormData(); fd.append('image', file);
+      const res = await fetch(`${API_URL}/api/admin/upload`, { 
+        method: 'POST', 
+        headers: { 'Authorization': `Bearer ${token}` }, 
+        body: fd 
+      });
+      const data = await res.json();
+      if (data.url) {
+        setEditing(prev => ({ ...prev, thumbnail: `${API_URL}${data.url}` }));
+      }
+    } catch(e) {
+      console.error('Upload failed:', e);
+    }
     setUploading(false);
   };
 
